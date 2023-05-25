@@ -7,7 +7,7 @@ namespace TurkMite
         static void Main()
         {
             Mat img = new Mat(200, 200, MatType.CV_8UC3, new Scalar(0, 0, 0));
-            var turkmite = new Turkmite(img);
+            var turkmite = new OriginalTurkmite(img);
             for (int i = 0; i < 13000; i++)
             {
                 turkmite.Step();

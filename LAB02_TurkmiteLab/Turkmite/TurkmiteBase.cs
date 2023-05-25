@@ -2,17 +2,16 @@
 using System;
 namespace TurkMite
 {
-    class Turkmite
+    abstract class TurkmiteBase
     {
         public Mat Image { get; }
         private int x;
         private int y;
         private int direction;  // 0 up, 1 right, 2 down, 3 left
         private Mat.Indexer<Vec3b> indexer;
-        readonly Vec3b black = new(0, 0, 0);
-        readonly Vec3b white = new(255, 255, 255);
-        private readonly (int x, int y)[] delta =  { (0, -1), (1, 0), (0, 1), (-1, 0) };
-        public Turkmite(Mat image)
+        private readonly (int x, int y)[] delta = { (0, -1), (1, 0), (0, 1), (-1, 0) };
+        private int deltaDir;
+        public TurkmiteBase(Mat image)
         {
             Image = image;
             x = image.Cols / 2;
@@ -22,29 +21,18 @@ namespace TurkMite
         }
         public void Step()
         {
-            indexer[y, x] = GetNextColorAndUpdateDirection(indexer[y, x]);
-            PerformMove();
+            (indexer[y, x], deltaDir) = GetNextColorAndUpdateDirection(indexer[y, x]);
+            PerformMove(deltaDir);
         }
-        private Vec3b GetNextColorAndUpdateDirection(Vec3b currentColor)
+        private void PerformMove(int deltaDir)
         {
-            if (currentColor == black)
-            {
-                direction++;
-                return white;
-            }
-            else
-            {
-                direction--;
-                return black;
-            }
-        }
-        private void PerformMove()
-        {
+            direction += deltaDir;
             direction = (direction + 4) % 4;
             x += delta[direction].x;
             y += delta[direction].y;
             x = Math.Min(Image.Cols - 1, Math.Max(0, x));
             y = Math.Min(Image.Cols - 1, Math.Max(0, y));
         }
+        protected abstract (Vec3b newColor, int deltaDir) GetNextColorAndUpdateDirection(Vec3b currentColor);
     }
 }
