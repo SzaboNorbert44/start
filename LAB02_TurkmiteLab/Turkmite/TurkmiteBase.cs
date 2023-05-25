@@ -5,6 +5,7 @@ namespace TurkMite
     abstract class TurkmiteBase
     {
         public Mat Image { get; }
+        public abstract int PreferredIterationCount { get; }
         private int x;
         private int y;
         private int direction;  // 0 up, 1 right, 2 down, 3 left
